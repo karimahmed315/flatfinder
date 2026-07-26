@@ -1,619 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zone 1–3 Finder · London homes to rent, part-buy &amp; own</title>
-<meta name="description" content="A curated London housing tracker: Zone 1–3 rentals, shared-ownership shares with a live rent calculator, and full-ownership buys under £250k.">
+<title>Zone 1–3 Finder — London homes to rent, part-buy or own</title>
+<meta name="description" content="A curated London housing tracker: Zone 1–3 rentals, shared-ownership shares with a live cost calculator, and full-ownership buys under £250k.">
 <meta name="robots" content="noindex, nofollow">
-<style>
-  :root{--bg:#0f1115;--card:#1a1d25;--line:#2a2f3a;--txt:#e8ebf2;--mut:#9aa3b2;--acc:#5b9dff;--acc2:#38d39f;--good:#38d39f;--new:#ffb454;--star:#ffd54a;--so:#c58bff;--auc:#ff7d7d}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  header{padding:22px 20px 6px;max-width:1200px;margin:0 auto}
-  h1{margin:0 0 2px;font-size:22px}
-  .sub{color:var(--mut);font-size:13px;margin-bottom:12px}
-  .modes{display:flex;gap:8px;max-width:1200px;margin:0 auto;padding:0 20px 10px}
-  .mode{flex:1;max-width:230px;text-align:center;background:var(--card);border:1px solid var(--line);color:var(--txt);padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
-  .mode.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#04122b;border-color:transparent}
-  .mode small{display:block;font-weight:400;font-size:11px;opacity:.85;margin-top:2px}
-  .bar{display:flex;flex-wrap:wrap;gap:8px;max-width:1200px;margin:0 auto;padding:6px 20px 4px;align-items:center}
-  .chip{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:6px 12px;border-radius:20px;font-size:13px;cursor:pointer}
-  .chip.on{background:var(--acc);border-color:var(--acc);color:#04122b;font-weight:600}
-  .chip.clearall{background:transparent;border-color:#ff6b6b;color:#ff9d9d}
-  .hintline{max-width:1200px;margin:0 auto;padding:0 20px 6px;color:#6f7889;font-size:11.5px}
-  .drops{display:flex;flex-wrap:wrap;gap:10px;max-width:1200px;margin:0 auto;padding:4px 20px 8px;align-items:center}
-  .drops label{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:3px}
-  .drops select{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:8px;font-size:13px;min-width:150px}
-  .drops .reset{align-self:flex-end;background:transparent;border:1px solid var(--line);color:var(--mut);padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px}
-  .note-strip{max-width:1200px;margin:0 auto;padding:2px 20px 10px;color:var(--mut);font-size:12px}
-  .note-strip a{color:var(--acc)}
-  main{max-width:1200px;margin:0 auto;padding:0 20px 60px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-  .ph{position:relative;aspect-ratio:16/10;background:#20242e}
-  .ph img{width:100%;height:100%;object-fit:cover;display:block}
-  .ph .noimg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#586074;font-size:13px;text-align:center;padding:10px}
-  .badges{position:absolute;top:8px;left:8px;display:flex;gap:6px;flex-wrap:wrap;max-width:90%}
-  .b{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;color:#04122b}
-  .b.new{background:var(--new)}
-  .b.star{background:var(--star)}
-  .b.b2{background:var(--good)}
-  .b.so{background:var(--so)}
-  .b.auc{background:var(--auc)}
-  .b.src{background:#33405c;color:#cfe0ff}
-  .price{position:absolute;bottom:8px;right:8px;background:rgba(4,10,20,.82);color:#fff;font-weight:700;padding:5px 10px;border-radius:8px;font-size:14px;text-align:right;line-height:1.2}
-  .price small{display:block;font-size:10px;font-weight:500;opacity:.85}
-  .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
-  .addr{font-weight:600}
-  .area{color:var(--mut);font-size:13px}
-  .allin{font-size:12px;color:var(--good)}
-  .mo{font-size:12px;color:#ffcf8f}
-  .afford{font-size:11px;color:#8fb7ff;margin-top:1px}
-  .heart{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;
-    background:rgba(4,10,20,.72);color:#fff;font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;
-    transition:transform .12s ease,background .12s ease}
-  .heart:hover{transform:scale(1.12);background:rgba(4,10,20,.9)}
-  .heart.on{background:#ff4d6d;color:#fff}
-  .addbar{max-width:1200px;margin:0 auto;padding:0 20px 12px}
-  .addbtn{background:#232a3a;border:1px dashed var(--acc);color:var(--acc);padding:9px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600}
-  .addpanel{display:none;margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
-  .addpanel.open{display:block}
-  .addpanel h3{margin:0 0 4px;font-size:15px}
-  .addpanel p.hint{margin:0 0 10px;color:var(--mut);font-size:12px}
-  .addgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-  .addgrid input,.addgrid select{background:#12151c;border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:8px;font-size:13px;width:100%}
-  .addgrid input::placeholder{color:#5f6878}
-  .addactions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-  .addactions button{padding:9px 14px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid var(--line)}
-  .primary{background:var(--acc);color:#04122b;border-color:var(--acc)!important;font-weight:700}
-  .ghost{background:transparent;color:var(--mut)}
-  .msg{font-size:12px;color:var(--good);margin-top:8px;min-height:16px}
-  .pending{border-style:dashed;border-color:var(--acc)}
-  .b.pend{background:var(--acc)}
-  .card.gone{opacity:.55}
-  .card.gone .ph img{filter:grayscale(1)}
-  .card.gone .addr{text-decoration:line-through;text-decoration-color:#ff6b6b}
-  .b.gone{background:#ff6b6b;color:#2b0000}
-  .goneline{font-size:12px;color:#ff9d9d}
-  .note{font-size:13px;color:#cfd5e0}
-  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
-  .tag{font-size:11px;background:#232734;border:1px solid var(--line);color:var(--mut);padding:2px 8px;border-radius:12px}
-  a.view{margin-top:8px;text-align:center;background:#232a3a;border:1px solid var(--line);color:var(--txt);text-decoration:none;padding:8px;border-radius:8px;font-size:13px}
-  a.view:hover{background:var(--acc);color:#04122b}
-  .count{color:var(--mut);font-size:13px;padding:0 20px 10px;max-width:1200px;margin:0 auto}
-</style>
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%231c3f5e'/%3E%3Cpath d='M6 11.5 12 6.5l6 5V18a1 1 0 0 1-1 1h-3v-4h-4v4H7a1 1 0 0 1-1-1z' fill='white'/%3E%3C/svg%3E">
 </head>
 <body>
-<header>
-  <h1>🏠 Zone 1–3 Finder</h1>
-  <div class="sub">London housing tracker · three routes, kept separate: <b>rent now</b>, <b>part-buy &amp; staircase to full ownership</b>, or <b>buy 100% outright</b>. Live share-cost calculator, saved shortlist, and sold/let tracking.</div>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.8V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.8"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="8" cy="8" r="4.5"/><path d="M11.2 11.2 20 20"/><path d="M17 17l-2 2 2 2"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5"/></symbol>
+    <symbol id="i-badge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.3 7.2 17.9l.9-5.4L4.2 8.7l5.4-.8L12 3Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 21 21"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20s-7.5-4.6-7.5-9.6A4.4 4.4 0 0 1 12 7.6a4.4 4.4 0 0 1 7.5 2.8c0 5-7.5 9.6-7.5 9.6Z"/></symbol>
+    <symbol id="i-heart-f" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 20.4S3.6 15.3 3.6 9.9A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 8.4 3.3c0 5.4-8.4 10.5-8.4 10.5Z"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m5 13 4.5 4.5L19 7"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6h.01"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 8v4.5"/><path d="M12 16h.01"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4Z"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8 7.5h8"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 18v-6h18v6"/><path d="M3 12V7"/><path d="M21 18v2M3 18v2"/><path d="M7 12V9.5h5V12"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.5"/><path d="M13.8 9.2a2.6 2.6 0 0 0-4.3 2v4.3"/><path d="M9 12.8h3.6"/><path d="M9 15.5h5"/></symbol>
+    <symbol id="i-slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M6 18 18 6"/></symbol>
+  </defs>
+</svg>
+
+<header class="masthead">
+  <div class="wrap masthead-in">
+    <div class="brand">
+      <div class="brand-mark"><svg><use href="#i-home"/></svg></div>
+      <div>
+        <h1>Zone 1–3 Finder</h1>
+        <p class="brand-sub">London housing tracker — rent, part-buy, or own outright</p>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b class="num" id="statTotal">—</b><span>Listings</span></div>
+      <div class="stat"><b class="num" id="statSaved">—</b><span>Saved</span></div>
+      <div class="stat"><b class="num" id="statSweep">—</b><span>Updated</span></div>
+    </div>
+  </div>
 </header>
 
-<div class="modes" id="modes">
-  <div class="mode on" data-m="rent">🔑 Rent<small>Studios &amp; 1-beds · 2-bed sharing</small></div>
-  <div class="mode" data-m="buy">🏦 Part-buy<small>Shared ownership · schemes · calculator</small></div>
-  <div class="mode" data-m="outright">💷 Own outright<small>100% ownership ≤£250k · 2/3-bed</small></div>
+<div class="routes" role="tablist" id="routes">
+  <button class="route" role="tab" data-route="rent" aria-selected="true">
+    <svg class="i"><use href="#i-key"/></svg> Rent <span class="route-count" data-rc="rent"></span></button>
+  <button class="route" role="tab" data-route="buy" aria-selected="false">
+    <svg class="i"><use href="#i-layers"/></svg> Part-buy &amp; schemes <span class="route-count" data-rc="buy"></span></button>
+  <button class="route" role="tab" data-route="own" aria-selected="false">
+    <svg class="i"><use href="#i-badge"/></svg> Own outright <span class="route-count" data-rc="own"></span></button>
 </div>
 
-<div class="note-strip" id="noteStrip"></div>
-<div class="bar" id="bar"></div>
-<div class="hintline">Tip: filters stack — click several. Same group is “or” (2-bed <i>or</i> 3-bed), different groups are “and” (2-bed <b>and</b> ♥ saved <b>and</b> shared ownership). Click a chip again to remove it.</div>
-<div class="drops" id="drops"></div>
-<div class="addbar">
-  <button class="addbtn" id="addToggle">＋ Add a flat you've found</button>
-  <div class="addpanel" id="addPanel">
-    <h3>Add a flat to the hub</h3>
-    <p class="hint">Paste a link from Rightmove, Zoopla, OpenRent, Share to Buy or an agent's site. It'll show up straight away as a <b>pending</b> card. Then hit <b>Copy to share</b> and send the summary over (WhatsApp, email, however) so the full details — price, beds, photo — get filled in and it becomes a permanent listing.</p>
-    <div class="addgrid">
-      <input id="aUrl" type="url" placeholder="Paste the flat's link (required)">
-      <input id="aAddr" type="text" placeholder="Address / area (optional)">
-      <input id="aPrice" type="text" placeholder="Price e.g. 250000 (optional)">
-      <select id="aType">
-        <option value="">Type (optional)</option>
-        <option value="studio">Studio</option>
-        <option value="1bed">1 bed</option>
-        <option value="2bed">2 bed</option>
-        <option value="3bed">3 bed</option>
-      </select>
-      <select id="aMode">
-        <option value="rent">For rent</option>
-        <option value="buy">Shared ownership / buy</option>
-        <option value="outright">Buy outright</option>
-      </select>
-      <input id="aNote" type="text" placeholder="Note e.g. near the school (optional)">
+<div class="toolbar">
+  <div class="wrap toolbar-in">
+    <div class="searchrow">
+      <div class="search" id="searchBox">
+        <svg class="i"><use href="#i-search"/></svg>
+        <input id="q" type="search" autocomplete="off" spellcheck="false"
+          placeholder="Search area, postcode, street or keyword — try “Zone 2 balcony”, “SE16”, “under 1100”">
+        <button class="clear" id="qClear" title="Clear search" aria-label="Clear search"><svg class="i"><use href="#i-x"/></svg></button>
+      </div>
+      <button class="btn" id="addToggle"><svg class="i"><use href="#i-plus"/></svg> Add a flat</button>
     </div>
-    <div class="addactions">
-      <button class="primary" id="aSave">Add to my list</button>
-      <button id="aSend">Add &amp; copy to share</button>
-      <button class="ghost" id="aCopyAll">Copy my whole shortlist</button>
-      <button class="ghost" id="aClear">Clear my added flats</button>
-    </div>
-    <div class="msg" id="aMsg"></div>
+    <div class="filters" id="filters"></div>
   </div>
 </div>
-<div class="count" id="count"></div>
-<main><div class="grid" id="grid"></div></main>
-<footer style="max-width:1200px;margin:0 auto;padding:24px 20px 48px;color:#6f7889;font-size:11.5px;border-top:1px solid var(--line)">
-  Curated from public listings on Rightmove, Zoopla and Share to Buy (the Mayor of London's official affordable-housing portal).
-  Prices, availability and share percentages change often — always confirm details, lease length, service charges and eligibility directly with the agent or housing provider before acting.
-  Shared-ownership rent is estimated at ~2.5%/yr of the unsold share; the provider's actual rate may differ. Not financial or legal advice.
-  ♥ saved flats and any you add are stored only in your own browser.
+
+<main class="wrap">
+  <div class="addwrap" id="addWrap"></div>
+  <div id="noticeSlot"></div>
+  <div class="resbar">
+    <div class="resmeta" id="resMeta"></div>
+    <div class="active-tags" id="activeTags"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <strong>Sources.</strong> Curated from public listings on Rightmove, Zoopla and Share to Buy (the Mayor of London's official affordable-housing portal).
+    Prices, availability and share percentages change frequently — always confirm the price, lease length, service charges, tenure and eligibility directly with the agent or housing provider before acting.
+    <strong>Shared ownership.</strong> You buy a share and pay subsidised rent on the remainder; rent shown here is estimated at ~2.5%/yr of the unsold share and the provider's actual rate may differ. Buying further shares (“staircasing”) reduces the rent, and at 100% there is no rent.
+    <strong>Privacy.</strong> Saved flats and anything you add are stored only in your own browser — nothing is uploaded or shared.
+    Not financial, mortgage or legal advice.
+  </div>
 </footer>
 
-<script>
-const IMG="https://media.rightmove.co.uk";
-
-/* ===================== SEGMENT 1 — RENT ===================== */
-const DATA_RENT = [
-  {id:91295076,addr:"Somerfield Road, Finsbury Park",area:"Finsbury Park · Zone 2",price:950,allin:"£950/mo · bills unclear",type:"studio",furn:"furnished",bills:"all",aug:1,star:1,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91295076",img:IMG+"/dir/crop/10:9-16:9/property-photo/1f7d85844/91295076/1f7d858440dda88652aef610862ad284_max_476x317.jpeg",note:"Self-contained studio with own kitchenette and en-suite shower; 2 min to Finsbury Park tube.",tags:["studio","own kitchen+bath","Zone 2","£950"],added:"2026-07-25",isNew:1},
-  {id:90186411,addr:"St. Stephens Gardens, W2",area:"Bayswater · Zone 2",price:1150,allin:"£1,150/mo · all bills included",type:"studio",furn:"furnished",bills:"all",aug:1,star:1,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/90186411",img:IMG+"/dir/property-photo/8b50580bf/90186411/8b50580bfae9fd29183d86aa13a94e1f_max_476x317.jpeg",note:"Self-contained studio, all bills inclusive, ~20 min to Oxford Circus.",tags:["studio","bills included","Zone 2"],added:"2026-07-25",isNew:1},
-  {id:91223157,addr:"Maygrove Road, West Hampstead NW6",area:"West Hampstead · Zone 2",price:1100,allin:"£1,100/mo · council tax + water + WiFi incl.",type:"studio",furn:"unfurnished",bills:"most",aug:1,star:1,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91223157",img:IMG+"/dir/crop/10:9-16:9/property-photo/e5de037e9/91223157/e5de037e9db209821509f3c995b829e3_max_476x317.jpeg",note:"Modern studio with kitchenette and en-suite; rent includes council tax, water and WiFi.",tags:["studio","most bills","Zone 2"],added:"2026-07-25",isNew:1,gone:"let",goneOn:"26 Jul",goneWhy:"listing removed by the agent — almost certainly let"},
-  {id:91288752,addr:"Benwell Road, Islington N7",area:"Islington · Zone 2",price:1100,allin:"£1,100/mo · bills unclear",type:"studio",furn:"furnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91288752",img:IMG+"/dir/crop/10:9-16:9/property-photo/72111d186/91288752/72111d1865cbade561a86ad3fbe950b6_max_476x317.jpeg",note:"Studio with kitchenette and fully tiled bathroom, 5 min walk to Holloway Road station.",tags:["studio","own kitchen+bath","Zone 2"],added:"2026-07-25",isNew:1},
-  {id:91258065,addr:"Warbeck Road, Shepherd's Bush W12",area:"Shepherd's Bush · Zone 2",price:1250,allin:"£1,250/mo · bills unclear",type:"studio",furn:"furnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91258065",img:IMG+"/dir/crop/10:9-16:9/property-photo/eec605d50/91258065/eec605d508afaf08dca9e87c7e8db51e_max_476x317.jpeg",note:"Self-contained studio with modern kitchenette and good storage in W12.",tags:["studio","Zone 2"],added:"2026-07-25",isNew:1},
-  {id:91230798,addr:"Telford Avenue, SW2",area:"Streatham Hill · Zone 3",price:1100,allin:"£1,100/mo · bills unclear",type:"studio",furn:"furnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91230798",img:IMG+"/dir/crop/10:9-16:9/property-photo/9b28d1a9d/91230798/9b28d1a9d66cd8b7241c4769a5cc64ee_max_476x317.jpeg",note:"Spacious bright studio on a quiet tree-lined street near Tooting Bec Common.",tags:["studio","spacious","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:89467362,addr:"Broadway, W13",area:"West Ealing · Zone 3",price:1000,allin:"£1,000/mo · bills unclear",type:"studio",furn:"unfurnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/89467362",img:IMG+"/dir/crop/10:9-16:9/property-photo/8dfec4461/89467362/8dfec4461122fae95f8f8a15f80ad60c_max_476x317.jpeg",note:"Self-contained studio flat on West Ealing Broadway — one of the cheapest at £1,000.",tags:["studio","£1000","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:91264728,addr:"Sylvan Avenue, N22",area:"Wood Green · Zone 3",price:1300,allin:"£1,300/mo · bills unclear",type:"studio",furn:"unfurnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91264728",img:IMG+"/dir/crop/10:9-16:9/property-photo/e220adf44/91264728/e220adf44fabad7ed6c96f633b28c676_max_476x317.jpeg",note:"First-floor studio conversion with its own private balcony.",tags:["studio","balcony","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:125414726,addr:"Holford Way, SW15",area:"Roehampton · Zone 3",price:1295,allin:"£1,295/mo · IMR (eligibility may apply)",type:"studio",furn:"unfurnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/125414726",img:IMG+"/dir/crop/10:9-16:9/property-photo/15caf5ae2/125414726/15caf5ae291e2a113ef5925b2e2316b5_max_476x317.jpeg",note:"Intermediate Market Rent studio in SW15 — check eligibility criteria before enquiring.",tags:["studio","IMR","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:91251372,addr:"Myddleton Road, Bounds Green N22",area:"Bounds Green · Zone 3",price:1300,allin:"£1,300/mo · bills unclear",type:"1bed",furn:"furnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91251372",img:IMG+"/dir/crop/10:9-16:9/property-photo/47d5cac61/91251372/47d5cac611b10daf58f08571be3450a4_max_476x317.jpeg",note:"Well-proportioned ground-floor one-bed flat in a quiet residential area.",tags:["1-bed","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:89800731,addr:"Albert Road, E16",area:"Custom House · Zone 3",price:1250,allin:"£1,250/mo · bills unclear",type:"1bed",furn:"furnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/89800731",img:IMG+"/dir/crop/10:9-16:9/property-photo/5b9a61e80/89800731/5b9a61e8026ffbe3dc1e86e556bab98c_max_476x317.jpeg",note:"Spacious one-bed with eat-in kitchen, separate living room and tiled bathroom.",tags:["1-bed","spacious","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:91302297,addr:"Catford Broadway, SE6",area:"Catford · Zone 3",price:1200,allin:"£1,200/mo · bills unclear",type:"1bed",furn:"unfurnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91302297",img:IMG+"/dir/crop/10:9-16:9/property-photo/67b489e57/91302297/67b489e572da040e3e5e0d6237e2b455_max_476x317.jpeg",note:"One-bed flat with 154 sq ft living room and separate kitchen in central Catford.",tags:["1-bed","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:91239900,addr:"Broadway, W13 (new build)",area:"West Ealing · Zone 3",price:1200,allin:"£1,200/mo · bills unclear",type:"1bed",furn:"unfurnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91239900",img:IMG+"/dir/crop/10:9-16:9/property-photo/cde0cf810/91239900/cde0cf8107fe6b2743675e2d4ad5e4c3_max_476x317.jpeg",note:"Brand-new one-bed flat on West Ealing Broadway, immediate availability.",tags:["1-bed","new build","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:91231356,addr:"High Road, NW10",area:"Willesden · Zone 3",price:1250,allin:"£1,250/mo · bills unclear",type:"1bed",furn:"unfurnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91231356",img:IMG+"/dir/property-photo/b462ba43f/91231356/b462ba43fa0489e45c7b2883340af230_max_476x317.jpeg",note:"Bright 1-bed 1-bath flat available to move in from 23 July.",tags:["1-bed","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:87744336,addr:"Albert Road, E16 (share)",area:"Custom House · Zone 3 · ~£850pp",price:1700,allin:"£1,700 total · ~£850 each (2 share)",type:"2bed",furn:"furnished",bills:"unclear",aug:1,star:1,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/87744336",img:IMG+"/dir/crop/10:9-16:9/property-photo/34a962bdf/87744336/34a962bdf8189a4c7998a0f1416a4bc5_max_476x317.jpeg",note:"Two-bed with spacious open-plan living area; 1 bathroom. Cheapest per-person share.",tags:["2-bed","~£850pp","1 bath","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:91088583,addr:"Rosebank Way, Acton W3 (share)",area:"Acton · Zone 3 · ~£900pp",price:1800,allin:"£1,800 total · ~£900 each (2 share)",type:"2bed",furn:"furnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91088583",img:IMG+"/dir/crop/10:9-16:9/property-photo/80b0f0b51/91088583/80b0f0b513c5249b25b78821843c3508_max_476x317.jpeg",note:"Two double bedrooms in a purpose-built block near Acton Mainline; 1 bathroom.",tags:["2-bed","~£900pp","1 bath","Zone 3"],added:"2026-07-25",isNew:1},
-  {id:89750943,addr:"John Silkin Lane, SE8 (share)",area:"Deptford · Zone 2 · ~£925pp",price:1850,allin:"£1,850 total · ~£925 each (2 share)",type:"2bed",furn:"furnished",bills:"unclear",aug:1,star:0,src:"Rightmove",url:"https://www.rightmove.co.uk/properties/89750943",img:IMG+"/dir/property-photo/0e2d3f3a1/89750943/0e2d3f3a1fbaede0d9b053e6fba8d9fa_max_476x317.jpeg",note:"Two-bed ground-floor flat near Canada Water and Surrey Quays; 1 bathroom.",tags:["2-bed","~£925pp","Zone 2"],added:"2026-07-25",isNew:1}
-];
-
-/* ============ SEGMENT 2 — PART-BUY / OWN ============ */
-/* price = ENTRY cost (share price for shared-ownership; full price for direct/auction).
-   mo = monthly rent on the unsold share (null for full/direct buys). moEst = estimate. */
-const DATA_BUY = [
-  /* ---- Shared ownership (Rightmove) ---- */
-  {id:146169182,addr:"Poplar Riverside, Hawser Lane E14",area:"Poplar / Bow · Zone 2–3",price:98750,unit:"share",scheme:"so",full:"new-build share (Peabody)",mo:560,moEst:1,type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/146169182",img:IMG+"/dir/crop/10:9-16:9/property-photo/21a8aad38/146169182/21a8aad38fffb72be4f6d7e7c9cf58ef_max_476x317.jpeg",note:"Shared-ownership share in the new Poplar Riverside development — modern riverside 1-bed.",tags:["shared ownership","1-bed","Zone 2–3","new build"],added:"2026-07-25",isNew:1,star:1},
-  {id:161760302,addr:"Guthrum Court, Galleons Reach E16",area:"Beckton · Zone 3",price:80000,unit:"25% share",scheme:"so",full:"25% · full ≈ £320k",mo:360,moEst:1,type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/161760302",img:IMG+"/dir/crop/10:9-16:9/property-photo/b0b1659ef/161760302/b0b1659ef2a3a73482ef62049b3b6bc1_max_476x317.jpeg",note:"25% share of a modern, well-presented 1-bed with open-plan reception; lowest entry cost here.",tags:["shared ownership","25% share","1-bed","Zone 3"],added:"2026-07-25",isNew:1,star:1},
-  {id:91265739,addr:"Millwright Apts, Pudding Mill Lane E15",area:"Stratford · Zone 2–3",price:106250,unit:"share",scheme:"so",full:"new-build scheme",mo:600,moEst:1,type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91265739",img:IMG+"/dir/crop/10:9-16:9/property-photo/2607ca180/91265739/2607ca180b4394b4b5459c25b4ad6b70_max_476x317.jpeg",note:"Brand-new shared-ownership 1-bed a short walk from Pudding Mill Lane DLR / Stratford.",tags:["shared ownership","1-bed","Zone 2–3","new build"],added:"2026-07-25",isNew:1,star:0},
-  {id:91265586,addr:"Millwright Apts, Pudding Mill Lane E15",area:"Stratford · Zone 2–3",price:130000,unit:"share",scheme:"so",full:"new-build scheme",mo:720,moEst:1,type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91265586",img:IMG+"/dir/crop/10:9-16:9/property-photo/544f04e41/91265586/544f04e41d31b064ea31a154045d35b7_max_476x317.jpeg",note:"Brand-new shared-ownership 2-bed at the same Stratford scheme — good for a family or sharer.",tags:["shared ownership","2-bed","Zone 2–3","new build"],added:"2026-07-25",isNew:1,star:1},
-  {id:91307241,addr:"Daneland Walk (Hale Village) N17",area:"Tottenham Hale · Zone 3",price:142000,unit:"40% share",scheme:"so",full:"40% · full ≈ £355k",mo:396,moEst:0,type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91307241",img:IMG+"/dir/crop/10:9-16:9/property-photo/b0eb0c2ec/91307241/b0eb0c2ec84f32d70093bb2aac588d8b_max_476x317.jpeg",note:"40% share of a purpose-built 2-bed in an award-winning development. Rent on the rest ≈ £396/mo.",tags:["shared ownership","40% share","2-bed","Zone 3"],added:"2026-07-25",isNew:1,star:0},
-  {id:89541894,addr:"Trinity Rise, SW2",area:"Tulse Hill / Brixton · Zone 3",price:150000,unit:"share",scheme:"so",full:"539 sq ft share",mo:650,moEst:1,type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/89541894",img:IMG+"/dir/crop/10:9-16:9/property-photo/ce594a3e2/89541894/ce594a3e22ef6f2ba66c4a6646d3d098_max_476x317.jpeg",note:"Shared-ownership 1-bed, bright 539 sq ft, ground floor of a purpose-built block near Brixton.",tags:["shared ownership","1-bed","Zone 3"],added:"2026-07-25",isNew:1,star:0},
-  {id:89599407,addr:"Thornbury Way, Walthamstow E17",area:"Walthamstow · Zone 3",price:116250,unit:"25% share",scheme:"so",full:"25% · full ≈ £465k",mo:520,moEst:1,type:"3bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/89599407",img:IMG+"/dir/property-photo/1c36575ac/89599407/1c36575aca448820a394caf4523a78cb_max_476x317.jpeg",note:"25% share of a 3 double-bedroom apartment, chain-free — a rare family-size share.",tags:["shared ownership","3-bed","25% share","Zone 3"],added:"2026-07-25",isNew:1,star:1},
-  /* ---- Shared ownership (Zoopla — actual monthly costs) ---- */
-  {id:"z73798162",addr:"Drayton Park, Highbury N5",area:"Highbury · Zone 2",price:132000,unit:"40% share",scheme:"so",full:"40% · full £330k",mo:316,moEst:0,type:"1bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/details/73798162/",img:"https://lid.zoocdn.com/u/480/360/cbf7376c98a63700b6a30c2428fd717b72a7b3b5.jpg",note:"40% share of a 1-bed in Highbury (Zone 2). Full value £330k; rent on the rest £316/mo.",tags:["shared ownership","1-bed","Zone 2","40% share"],added:"2026-07-25",isNew:1,star:1},
-  {id:"z73799237",addr:"Pimento House, Goodmans Fields E1",area:"Aldgate / Whitechapel · Zone 1",price:180000,unit:"25% share",scheme:"so",full:"25% share · Zone 1",mo:855,moEst:1,type:"2bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/details/73799237/",img:"https://lid.zoocdn.com/u/480/360/17aa53d9d223c3caaacedd7f955c53566c3040db.jpg",note:"25% share of a 2-bed in Goodman's Fields — a genuine Zone 1 shared-ownership option with two private balconies.",tags:["shared ownership","2-bed","Zone 1"],added:"2026-07-25",isNew:1,star:1},
-  {id:"z73798987",addr:"Rotherhithe New Road, SE16",area:"South Bermondsey · Zone 2",price:143750,unit:"25% share",scheme:"so",full:"25% share",mo:439,moEst:0,type:"3bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/details/73798987/",img:"https://lid.zoocdn.com/u/480/360/18dd1b429cce1f083d5fafee1eb0a4ed1ee37554.jpg",note:"25% share of a 3-bed, 2-bath with roof terrace, two balconies and residents' gym; rent £439/mo.",tags:["shared ownership","3-bed","2 baths","Zone 2"],added:"2026-07-25",isNew:1,star:1},
-  {id:"z73799536",addr:"Herringbone Apartments, Courthouse Way SW18",area:"Wandsworth · Zone 3",price:167500,unit:"share",scheme:"so",full:"long lease · 2 baths",mo:483,moEst:0,type:"2bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/details/73799536/",img:"https://lid.zoocdn.com/u/480/360/75d5f9d1933263a6f55eb0dfc4e763edff510b68.jpg",note:"Shared-ownership 2-bed, 2-bath with a private balcony in Wandsworth; rent £483/mo.",tags:["shared ownership","2-bed","2 baths","Zone 3"],added:"2026-07-25",isNew:1,star:0},
-  /* ---- Shared ownership (Zoopla — marquee, entry data + estimates) ---- */
-  {id:"zsSE11",addr:"Oval Village, SE11",area:"Oval / Kennington · Zone 2",price:180000,unit:"share",scheme:"so",full:"new-build · Zone 2",mo:700,moEst:1,type:"2bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/shared-ownership/london/?q=Oval+Village+SE11",img:"",note:"Shared-ownership 2-bed at the new Oval Village scheme — Zone 2, walkable to the City & South Bank.",tags:["shared ownership","2-bed","Zone 2","new build"],added:"2026-07-25",isNew:1,star:0},
-  {id:"zsW3",addr:"So Resi North Acton, W3",area:"North Acton · Zone 2–3",price:115625,unit:"25% share",scheme:"so",full:"25% · full £462,500 · 548 sq ft",mo:800,moEst:1,type:"1bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/shared-ownership/london/?q=So+Resi+North+Acton+W3",img:"",note:"25% share of a 548 sq ft 1-bed at So Resi North Acton; full value £462,500.",tags:["shared ownership","1-bed","Zone 2–3","25% share"],added:"2026-07-25",isNew:1,star:0},
-  {id:"zsE16",addr:"The Silverton, Thames Road E16",area:"Royal Docks · Zone 3",price:95000,unit:"share",scheme:"so",full:"539 sq ft · ready now",mo:520,moEst:1,type:"1bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/shared-ownership/london/?q=The+Silverton+Thames+Road+E16",img:"",note:"Ready-to-move-in shared-ownership 1-bed at The Silverton, Royal Docks — one of the lowest share prices found.",tags:["shared ownership","1-bed","Zone 3","£95k share"],added:"2026-07-25",isNew:1,star:0},
-  {id:"zsSE3",addr:"Banks Road, Kidbrooke SE3",area:"Kidbrooke · Zone 3",price:153125,unit:"share",scheme:"so",full:"1,033 sq ft · terrace + parking",mo:720,moEst:1,type:"3bed",src:"Zoopla",url:"https://www.zoopla.co.uk/for-sale/shared-ownership/london/?q=Banks+Road+Kidbrooke+SE3",img:"",note:"Shared-ownership 3-bed, 2-bath (1,033 sq ft) with private terrace and parking at Kidbrooke Village.",tags:["shared ownership","3-bed","2 baths","Zone 3"],added:"2026-07-25",isNew:1,star:0},
-  /* ---- Share to Buy — OFFICIAL London portal (developments & schemes) ---- */
-  {id:"stb4157a",addr:"Alta at Consort Place, Canary Wharf E14",area:"Canary Wharf · Zone 2",price:136250,unit:"25% share",scheme:"so",full:"25% · full £545k",mo:818,moEst:0,type:"1bed",src:"Share to Buy",url:"https://www.sharetobuy.com/developments/4157",img:"",note:"Award-winning shared-ownership tower (floors 25–32) in Canary Wharf; 25% share £136,250. Total monthly ≈ £1,869 (rent £818 + service charge + mortgage).",tags:["shared ownership","1-bed","Zone 2","Canary Wharf"],added:"2026-07-25",isNew:1,star:1},
-  {id:"stb4157b",addr:"Alta at Consort Place, Canary Wharf E14",area:"Canary Wharf · Zone 2",price:162500,unit:"25% share",scheme:"so",full:"25% · full £650k",mo:975,moEst:0,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/developments/4157",img:"",note:"2-bed at Alta with skyline views; 25% share £162,500, rent £975/mo (plus service charge & mortgage).",tags:["shared ownership","2-bed","Zone 2","Canary Wharf"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb4243",addr:"New Mansion Square, Battersea SW8",area:"Battersea · Zone 1–2",price:null,unit:"see listing",scheme:"so",full:"1–2 bed · SO (Peabody)",mo:null,moEst:0,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/developments/4243",img:"",note:"Peabody shared-ownership 1 &amp; 2-beds by Battersea Park; ~5 min to Battersea Power Station tube.",tags:["shared ownership","Zone 1–2","Battersea"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb1078",addr:"New Union Wharf, Crossharbour E14",area:"Isle of Dogs · Zone 2",price:null,unit:"see listing",scheme:"so",full:"1–2 bed · SO (L&amp;Q)",mo:null,moEst:0,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/developments/1078",img:"",note:"L&amp;Q shared-ownership apartments overlooking the Thames; 7 min walk to Crossharbour DLR.",tags:["shared ownership","Zone 2","balcony"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb4625",addr:"Square Roots Lewisham SE13",area:"Lewisham · Zone 2–3",price:null,unit:"see listing",scheme:"so",full:"1–3 bed · SO",mo:null,moEst:0,type:"3bed",src:"Share to Buy",url:"https://www.sharetobuy.com/developments/4625",img:"",note:"1–3 bed shared-ownership with balconies, landscaped gardens &amp; play areas; 8 min to Lewisham DLR/rail.",tags:["shared ownership","1–3 bed","Zone 2–3","family"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb4222",addr:"Three Waters, Bow Creek E3",area:"Bow · Zone 2–3",price:null,unit:"see listing",scheme:"so",full:"1–3 bed · SO (Peabody)",mo:null,moEst:0,type:"3bed",src:"Share to Buy",url:"https://www.sharetobuy.com/developments/4222",img:"",note:"Peabody 1–3 bed shared-ownership with roof terrace and on-site screening room; DLR nearby.",tags:["shared ownership","1–3 bed","Zone 2–3"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stbLLR",addr:"London Living Rent (Rent-to-Buy) — London-wide",area:"Zone 1–3 · rents vary by area",price:null,unit:"rent-to-buy",scheme:"rent2buy",full:"official rent-to-own scheme",mo:null,moEst:0,type:"llr",src:"Share to Buy",url:"https://www.sharetobuy.com/schemes/london-living-rent/",img:"",note:"Mayor of London's rent-to-own: rent ~a third below market on a 3–10 year tenancy, save a deposit, then buy your home via shared ownership. Household income cap £75k; 2-bed benchmark rents ≈ £1,270/mo.",tags:["rent-to-buy","London Living Rent","income ≤£75k"],added:"2026-07-25",isNew:1,star:1},
-  /* ---- Share to Buy — more London listings (scheme variety, cheap monthly) ---- */
-  {id:"stb611609",addr:"Trundleys Road, Deptford SE8",area:"Deptford · Zone 2",price:40000,unit:"10% share",scheme:"so",full:"10% share · full £400k",mo:750,moEst:1,type:"1bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/611609/",img:"",note:"Lowest entry cost on the whole board — a 10% share of a new-build 1-bed for just £40,000. Rent on the remaining 90% (+ service charge) is the trade-off.",tags:["shared ownership","10% share","£40k entry","Zone 2"],added:"2026-07-25",isNew:1,star:1},
-  {id:"stb574138",addr:"Estelle House, Stroudley Walk, Bow E3",area:"Bow · Zone 2",price:96250,unit:"25% share",scheme:"so",full:"25% · full £385k",mo:602,moEst:1,type:"1bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/574138/",img:"",note:"New-build 1-bed shared-ownership in Bow; 25% share, estimated rent on the rest ≈ £600/mo plus service charge.",tags:["shared ownership","1-bed","Zone 2","new build"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb416613",addr:"Estelle House, Stroudley Walk, Bow E3",area:"Bow · Zone 2",price:98125,unit:"25% share",scheme:"so",full:"25% · full £392.5k",mo:613,moEst:1,type:"1bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/416613/",img:"",note:"Another 1-bed at Estelle House, Bow — 25% share, estimated ≈ £613/mo rent plus service charge.",tags:["shared ownership","1-bed","Zone 2","new build"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb558134",addr:"Dunlip House, Poplar Riverside E14",area:"Poplar · Zone 2–3",price:98125,unit:"25% share",scheme:"so",full:"25% · full £392.5k",mo:613,moEst:1,type:"1bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/558134/",img:"",note:"1-bed at Poplar Riverside; 25% share, estimated ≈ £613/mo rent plus service charge.",tags:["shared ownership","1-bed","Zone 2–3","new build"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb533385",addr:"Wood Lane, White City W12",area:"White City · Zone 2",price:105000,unit:"25% share",scheme:"so",full:"25% · full £420k",mo:656,moEst:1,type:"studio",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/533385/",img:"",note:"Studio shared-ownership at White City; 25% share, estimated ≈ £656/mo rent plus service charge.",tags:["shared ownership","studio","Zone 2","White City"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb388653",addr:"Barrington Court, Wilton Rd, Westminster SW1V",area:"Pimlico / Victoria · Zone 1",price:192000,unit:"40% share",scheme:"so",full:"40% · full £480k · RESALE",mo:600,moEst:1,type:"1bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/388653/",img:"",note:"Shared-ownership RESALE 1-bed on Wilton Road — genuinely in Pimlico/Victoria (Zone 1). 40% share £192k; rent on the rest ≈ £600/mo. The most central shared-ownership option on the board.",tags:["shared ownership","1-bed","Zone 1","Pimlico","resale"],added:"2026-07-25",isNew:1,star:1},
-  {id:"stb510053",addr:"Goldsworthy Gardens, Bermondsey SE16",area:"Bermondsey · Zone 2",price:null,unit:"monthly rent",scheme:"intrent",full:"Intermediate Rent (below-market)",mo:1100,moEst:0,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/510053/",img:"",note:"Intermediate Rent 2-bed — a below-market monthly rental (no purchase, no big deposit). £1,100/mo for a 2-bed in Zone 2 is well under market; a good bridge while saving.",tags:["intermediate rent","2-bed","£1,100/mo","Zone 2"],added:"2026-07-25",isNew:1,star:1},
-  {id:"stb704419",addr:"Mundell House, Kidbrooke SE3",area:"Kidbrooke · Zone 3",price:117500,unit:"25% share",scheme:"so",full:"25% · full £470k",mo:734,moEst:1,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/704419/",img:"",note:"New-build 2-bed shared-ownership at Kidbrooke Village; 25% share, estimated ≈ £734/mo rent plus service charge.",tags:["shared ownership","2-bed","Zone 3","new build"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb628581",addr:"Leven Road, Poplar E14",area:"Poplar · Zone 2–3",price:123125,unit:"25% share",scheme:"so",full:"25% · full £492.5k",mo:770,moEst:1,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/628581/",img:"",note:"2-bed shared-ownership in Poplar; 25% share, estimated ≈ £770/mo rent plus service charge.",tags:["shared ownership","2-bed","Zone 2–3"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb574149",addr:"Estelle House, Stroudley Walk, Bow E3",area:"Bow · Zone 2",price:116875,unit:"25% share",scheme:"so",full:"25% · full £467.5k · under offer",mo:730,moEst:1,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/574149/",img:"",note:"2-bed at Estelle House, Bow; 25% share, est ≈ £730/mo rent plus service charge.",tags:["shared ownership","2-bed","Zone 2","under offer"],added:"2026-07-25",isNew:1,star:0,gone:"sold",goneOn:"26 Jul",goneWhy:"under offer on Share to Buy — reserved by another buyer"},
-  {id:"stb552455",addr:"Trundleys Road, Deptford SE8",area:"Deptford · Zone 2",price:130000,unit:"25% share",scheme:"so",full:"25% · full £520k · 2 baths",mo:812,moEst:1,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/552455/",img:"",note:"2-bed, 2-bath new-build shared-ownership in Deptford; 25% share, est ≈ £812/mo rent plus service charge.",tags:["shared ownership","2-bed","2 baths","Zone 2"],added:"2026-07-25",isNew:1,star:0},
-  {id:"stb565368",addr:"Trundleys Road, Deptford SE8",area:"Deptford · Zone 2",price:133125,unit:"25% share",scheme:"so",full:"25% · full £532.5k",mo:832,moEst:1,type:"2bed",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/565368/",img:"",note:"Another 2-bed at the Deptford scheme; 25% share, est ≈ £832/mo rent plus service charge.",tags:["shared ownership","2-bed","Zone 2"],added:"2026-07-25",isNew:1,star:0},
-  /* ---- Direct full-ownership ≤£200k (Rightmove) ---- */
-  {id:91269933,addr:"Westferry Road, E14",area:"Isle of Dogs · Zone 2",price:190000,unit:"full",scheme:"direct",full:"full ownership",mo:null,moEst:0,type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91269933",img:IMG+"/dir/crop/10:9-16:9/property-photo/bf8c761ec/91269933/bf8c761ec40a9363bf60c43c418b1cfb_max_476x317.jpeg",note:"Full-ownership 1-bed with off-street parking — a rare sub-£200k buy this close to Canary Wharf.",tags:["direct buy","1-bed","Zone 2","full ownership"],added:"2026-07-25",isNew:1,star:1},
-  {id:91307691,addr:"Fraser Close, E6",area:"Beckton / East Ham · Zone 3",price:190000,unit:"full",scheme:"direct",full:"full ownership",mo:null,moEst:0,type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91307691",img:IMG+"/dir/crop/10:9-16:9/property-photo/269757dd3/91307691/269757dd30b7638d6b395bebc0d22b56_max_476x317.jpeg",note:"One-bed first-floor maisonette — full ownership under £200k.",tags:["direct buy","1-bed","Zone 3","full ownership"],added:"2026-07-25",isNew:1,star:0},
-  {id:91230024,addr:"Colchester Avenue, Manor Park E12",area:"Manor Park · Zone 3",price:200000,unit:"full",scheme:"direct",full:"full ownership",mo:null,moEst:0,type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91230024",img:IMG+"/dir/crop/10:9-16:9/property-photo/98ae3a3a0/91230024/98ae3a3a00b4e56bfadf862a4e33cedd_max_476x317.jpeg",note:"Ground-floor garden flat just off Romford Road — full-ownership 2-bed at £200k.",tags:["direct buy","2-bed","Zone 3","garden"],added:"2026-07-25",isNew:1,star:0},
-  {id:174285038,addr:"Bramlands Close, Battersea SW11",area:"Battersea · Zone 2",price:200000,unit:"verify tenure",scheme:"verify",full:"price implies a share",mo:null,moEst:0,type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/174285038",img:IMG+"/dir/crop/10:9-16:9/property-photo/8e2c400df/174285038/8e2c400df996338ca7a2b3f2d80d68b9_max_476x317.jpeg",note:"6th-floor 2-bed in gated Falcon's development at £200k — far below Battersea market, so likely a share or ex-council; confirm tenure.",tags:["2-bed","Zone 2","verify tenure"],added:"2026-07-25",isNew:1,star:0},
-  /* ---- Auction lots (sub-£200k ownership, higher risk) ---- */
-  {id:91249068,addr:"Ripley Road, E16",area:"Custom House · Zone 3",price:165000,unit:"guide (auction)",scheme:"auction",full:"Savills auction · 18 Aug",mo:null,moEst:0,type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91249068",img:IMG+"/dir/crop/10:9-16:9/property-photo/59f21ae3f/91249068/59f21ae3f23554e0ba05b7470852e78c_max_476x317.jpeg",note:"Auction lot (Savills, 18 Aug) — 2-bed flat; cash / quick completion, do full due diligence.",tags:["auction","2-bed","Zone 3"],added:"2026-07-25",isNew:1,star:0},
-  {id:90453858,addr:"Telegraph Place, E14",area:"Isle of Dogs · Zone 2",price:190000,unit:"guide (auction)",scheme:"auction",full:"share of freehold",mo:null,moEst:0,type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/90453858",img:IMG+"/dir/crop/10:9-16:9/property-photo/d8cdabb71/90453858/d8cdabb716891fd64adf1c125963785b_max_476x317.jpeg",note:"Online-auction 1-bed ground-floor flat with share of freehold in a secluded spot.",tags:["auction","1-bed","Zone 2"],added:"2026-07-25",isNew:1,star:0},
-  {id:91295955,addr:"Hedley Court, Putney Hill SW15",area:"Putney · Zone 3",price:130000,unit:"guide (auction)",scheme:"auction",full:"public auction",mo:null,moEst:0,type:"3bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91295955",img:IMG+"/dir/crop/10:9-16:9/property-photo/f2b0af01b/91295955/f2b0af01b0a9a60f30b1d66404164cc0_max_476x317.jpeg",note:"Auction lot — 3-bed in Putney at a very low guide; likely tenanted / short lease, due diligence essential.",tags:["auction","3-bed","Zone 3"],added:"2026-07-25",isNew:1,star:0}
-];
-
-/* ============ SEGMENT 3 — FULL OWNERSHIP (≤£250k, ~3–5 mi of SW1V) ============
-   Criteria: ≤£250k · 100% ownership (no rent) · 2/3-beds prioritised ·
-   within 3–5 miles of SW1V · below-market stock preferred. */
-const DATA_OUTRIGHT = [
-  {id:"o87978201",addr:"Clapham Road, Oval SW9",area:"Oval · Zone 2 · ~1.5 mi",price:250000,unit:"full price",scheme:"outright",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/87978201",img:IMG+"/dir/crop/10:9-16:9/property-photo/d4399c1c7/87978201/d4399c1c7e0c793bd48208d203c8d21d_max_476x317.jpeg",mo:null,full:"full ownership · over 2 floors",note:"A 2-bed flat over two floors with a bright, spacious reception, in Oval (~1.5 mi from Pimlico) — full ownership at budget. Northern/Victoria lines nearby.",tags:["2-bed","Oval","at budget","family"],star:1,added:"2026-07-25",isNew:1},
-  {id:"o87977241",addr:"Guildford Road, Stockwell SW8",area:"Stockwell · Zone 2 · ~2 mi",price:250000,unit:"full price",scheme:"outright",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/87977241",img:IMG+"/dir/property-photo/211ce259b/87977241/211ce259b12c2a61c94d0fd21ab60486_max_476x317.jpeg",mo:null,full:"full ownership",note:"Two-bed flat in Stockwell (~2 mi), full ownership at budget — a quick Victoria-line hop from Pimlico/Victoria.",tags:["2-bed","Stockwell","at budget","family"],star:1,added:"2026-07-25",isNew:1},
-  {id:"o87896124",addr:"Lovelinch Close, Nunhead SE15",area:"Nunhead / Peckham · Zone 2 · ~3 mi",price:250000,unit:"full price",scheme:"outright",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/87896124",img:IMG+"/dir/crop/10:9-16:9/property-photo/38f1720a3/87896124/38f1720a3ea104e39019db1574516b6b_max_476x317.jpeg",mo:null,full:"full ownership · refurbished + office",note:"Beautifully refurbished second-floor 2-bed with an extra office/study space in Nunhead (~3 mi) — full ownership, move-in ready, at budget.",tags:["2-bed","Nunhead","refurbished","office","at budget"],star:1,added:"2026-07-25",isNew:1},
-  {id:"o88942983",addr:"Green Hundred Road, Peckham SE15",area:"Peckham · Zone 2 · ~3 mi",price:250000,unit:"full price",scheme:"outright",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/88942983",img:IMG+"/dir/property-photo/524c9d188/88942983/524c9d1881d3bc720f52349c989a8f36_max_476x317.jpeg",mo:null,full:"full ownership",note:"Two-bed apartment in Peckham (~3 mi), full ownership at budget — well connected to London Bridge/Victoria.",tags:["2-bed","Peckham","at budget","family"],star:0,added:"2026-07-25",isNew:1},
-  {id:"o89131137",addr:"Brydale House, Surrey Quays SE16",area:"Surrey Quays · Zone 2 · ~2.5 mi",price:250000,unit:"full price",scheme:"outright",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/89131137",img:IMG+"/dir/property-photo/399f5ce0d/89131137/399f5ce0d1c1c035760edd4f3842c61b_max_476x317.jpeg",mo:null,full:"full ownership",note:"Two-bed flat by Surrey Quays (~2.5 mi), full ownership at budget — near Canada Water and the Overground.",tags:["2-bed","Surrey Quays","at budget","family"],star:0,added:"2026-07-25",isNew:1},
-  {id:"o164029433",addr:"Aspinden Road, Bermondsey SE16",area:"Bermondsey · Zone 2 · ~2.5 mi",price:250000,unit:"full price",scheme:"outright",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/164029433",img:IMG+"/dir/property-photo/8ab47f291/164029433/8ab47f29144d11d2f759e0e75dd8eec9_max_476x317.jpeg",mo:null,full:"full ownership",note:"Two-bed on Aspinden Road, Bermondsey (~2.5 mi), full ownership at budget — walkable to Bermondsey tube.",tags:["2-bed","Bermondsey","at budget","family"],star:0,added:"2026-07-25",isNew:1},
-  {id:"o87857169",addr:"Elder Gardens, West Norwood SE27",area:"West Norwood · Zone 3 · ~4 mi",price:250000,unit:"full price",scheme:"outright",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/87857169",img:IMG+"/dir/crop/10:9-16:9/property-photo/b121ddfc2/87857169/b121ddfc2f4646ec0560ca41707e41cc_max_476x317.jpeg",mo:null,full:"full ownership",note:"Two-bed flat in West Norwood (~4 mi), full ownership at budget — more space for the money a little further out.",tags:["2-bed","West Norwood","at budget","family"],star:0,added:"2026-07-25",isNew:1},
-  {id:"o91109622",addr:"Priory Grove, SW8",area:"Stockwell / Wandsworth Rd · Zone 2 · ~2 mi",price:250000,unit:"full price",scheme:"outright",type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91109622",img:IMG+"/dir/crop/10:9-16:9/property-photo/1e20d077e/91109622/1e20d077ec076f52ce5cbfcee5fec437_max_476x317.jpeg",mo:null,full:"full ownership · no chain",note:"Chain-free ground-floor 1-bed priced low because it needs modernising — cheapest genuine outright buy found. (1-bed; tighter for a family of 4.)",tags:["1-bed","£250k","below market","no chain"],star:0,added:"2026-07-25",isNew:1},
-  {id:"o90822693",addr:"Mitcham Lane, Streatham SW16",area:"Streatham · Zone 3 · ~4 mi",price:250000,unit:"auction guide",scheme:"auction",type:"2bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/90822693",img:IMG+"/dir/crop/10:9-16:9/property-photo/72bc08ac6/90822693/72bc08ac628cbfd1aac63f87213059aa_max_476x317.jpeg",mo:null,full:"auction · full ownership",note:"Two-bed at auction (28 Jul) in Streatham (~4 mi), £250k guide — at budget, below-market via auction. Do full due diligence on the legal pack.",tags:["2-bed","Streatham","auction","at budget"],star:0,added:"2026-07-25",isNew:1},
-  {id:"o91248918",addr:"Alderney Street, Pimlico SW1V (stretch)",area:"Pimlico · Zone 1 · ~0 mi",price:270000,unit:"auction guide",scheme:"auction",type:"1bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/91248918",img:IMG+"/dir/property-photo/a6e56259a/91248918/a6e56259a9b067594910438cc14aceb6_max_476x317.jpeg",mo:null,full:"auction · full ownership · £20k over",note:"1-bed in Pimlico itself going to auction, £270k guide (~£20k over budget). Pimlico-proper and below market via auction — a cash bid could still land near budget.",tags:["1-bed","Pimlico SW1V","auction","stretch"],star:0,added:"2026-07-25",isNew:1},
-  {id:"o90643896",addr:"John Ruskin Street, Oval SE5 (stretch)",area:"Oval / Camberwell · Zone 2 · ~2 mi",price:285000,unit:"full price",scheme:"outright",type:"3bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/90643896",img:IMG+"/dir/property-photo/67b728ca1/90643896/67b728ca1842481e2f84152cee6af3d2_max_476x317.jpeg",mo:null,full:"full ownership · ex-LA · £35k over",note:"Rare 3-bed at £285k near Oval — ex-local-authority, far below private 3-bed prices. ~£35k over budget but the best family-size full-ownership value found — worth a cash offer.",tags:["3-bed","Oval","family","stretch"],star:1,added:"2026-07-25",isNew:1},
-  {id:"o174674210",addr:"Charlotte Despard Avenue, Battersea SW11 (stretch)",area:"Battersea · Zone 2 · ~2 mi",price:325000,unit:"full price",scheme:"outright",type:"3bed",src:"Rightmove",url:"https://www.rightmove.co.uk/properties/174674210",img:IMG+"/dir/crop/10:9-16:9/property-photo/944b93275/174674210/944b93275120d4656236ced090a37db4_max_476x317.jpeg",mo:null,full:"full ownership · roof terrace · £75k over",note:"Large split-level 3-bed with a 750 sq ft private roof terrace in Battersea. £325k — well over budget, but the roomiest family option if funds stretch.",tags:["3-bed","Battersea","roof terrace","stretch"],star:0,added:"2026-07-25",isNew:1},
-  {id:"oMaxShare",addr:"Max-share Shared Ownership — rent ≈ pennies",area:"Zone 1–2 · use the Buy tab's share calculator",price:null,unit:"strategy",scheme:"maxshare",type:"any",src:"Share to Buy",url:"https://www.sharetobuy.com/properties/",img:"",mo:150,moEst:1,full:"buy the biggest share your cash allows",note:"If outright feels tight for a family of 4, this is the smart alternative: with £250k buy the maximum share of a bigger 2/3-bed. On a ~£330k home that's ~75% owned with only ~£170/mo rent; on a ~£355k home ~70% owned. Use the SHARE % calculator in the Part-buy tab to see exact rent at each share.",tags:["shared ownership","max share","low rent","2/3-bed"],star:1,added:"2026-07-25",isNew:1},
-  {id:"oFirstHomes",addr:"First Homes scheme — 30–50% off, full ownership",area:"London-wide (mostly outer boroughs)",price:null,unit:"scheme",scheme:"firsthomes",type:"any",src:"Share to Buy",url:"https://www.sharetobuy.com/schemes/first-homes/",img:"",mo:null,full:"full ownership at a permanent discount",note:"Buy a new-build outright at 30–50% below market (London cap £420k after discount). Caveats for this case: first-time buyers only, income ≤£90k, you must take a mortgage for ≥50% (not a pure-cash buy), resale is discount-restricted, and London stock is new-build in outer boroughs (Enfield, Thamesmead, Greenwich) — not near Pimlico. Included for completeness; likely a poor fit.",tags:["First Homes","30–50% off","needs mortgage","outer London"],star:0,added:"2026-07-25",isNew:1}
-];
-
-/* Full market values (£) for shared-ownership listings — powers the SHARE % calculator.
-   Only listings with a reliable full value (exact from source or from a stated share %)
-   are included; other SO listings just show as-listed. */
-const RENTRATE = 0.025;   // ~2.5%/yr rent charged on the unsold share (varies 1.9–2.75% by provider)
-const BUDGET  = 250000;   // available cash
-const FULLVAL = {
-  "161760302":320000,"91307241":355000,"89599407":465000,
-  "z73798162":330000,"z73799237":720000,"z73798987":575000,"zsW3":462500,
-  "stb611609":400000,"stb574138":385000,"stb416613":392500,"stb558134":392500,
-  "stb533385":420000,"stb388653":480000,"stb704419":470000,"stb628581":492500,
-  "stb574149":467500,"stb552455":520000,"stb565368":532500
-};
-/* Effective share cost / rent given the chosen share % (sharePct). 0 = "as listed". */
-function fv(d){ return FULLVAL[d.id]||null; }
-function effShareCost(d){ if(sharePct>0 && fv(d)) return Math.round(fv(d)*sharePct/100); return d.price; }
-function effRent(d){
-  if(sharePct>0 && fv(d)) return Math.round(fv(d)*(100-sharePct)/100*RENTRATE/12);
-  return d.mo;
-}
-function affordPct(d){ let f=fv(d); if(!f) return null; return Math.min(100, Math.floor(BUDGET/f*100)); }
-
-/* ===================== VIEW LOGIC ===================== */
-const MODES = {
-  rent:{
-    data:DATA_RENT,
-    note:"Rentals · Zone 1–3 · move-in by 15 Aug 2026 · studios &amp; 1-beds ≤£1,300 solo, 2-beds £1,300–2,000 to share.",
-    chips:[["all","All"],["new","✨ New"],["star","★ Top picks"],["studio","Studios"],["1bed","1-beds"],["2bed","2-bed shares"],["bills","Bills incl."]],
-    drops:false
-  },
-  buy:{
-    data:DATA_BUY,
-    note:"Part-buy &amp; ownership schemes · Zone 1–3 · sources: Rightmove, Zoopla &amp; the official <a href='https://www.sharetobuy.com/properties/' target='_blank' rel='noopener'>Share to Buy</a> portal. Scheme variety spans <b>shared ownership</b> (10%–100% shares), <b>SO resale</b>, <b>Intermediate Rent</b>, <b>London Living Rent / Rent-to-buy</b>, plus direct &amp; auction buys. <b>🧮 Use the “Share calculator — buy %” dropdown</b> to see, for any chosen share, both the cash you'd pay and the rent on the rest (rent est. at ~2.5%/yr; service charge extra). Each shared-ownership card also shows its full market value and what a <b>£250k budget</b> would secure as a share. Bigger share = less rent; 100% = owned outright, no rent.",
-    chips:[["all","All"],["star","★ Top picks"],["so","Shared ownership"],["intrent","Intermediate rent"],["rent2buy","Rent-to-buy (LLR)"],["direct","Direct ≤£200k"],["auction","Auction"],["1bed","1-bed"],["2bed","2-bed"],["3bed","3-bed"]],
-    drops:"buy"
-  },
-  outright:{
-    data:DATA_OUTRIGHT,
-    note:"<b>100% ownership · ≤£250k · 2/3-beds prioritised · within ~3–5 miles of SW1V</b> (Oval, Stockwell, Battersea, Walworth, Peckham, Bermondsey, Surrey Quays, Brixton, Streatham). At this budget the stock is ex-local-authority, period conversions, refurbishment projects and auction lots — all owned outright with no rent, only service charges. There are genuine <b>2-beds at £250k</b>; true 3-beds don't exist at this price this close in, so those are flagged “stretch” with the exact overage. For more space on the same money, compare against <b>max-share shared ownership</b> using the 🧮 calculator in the Part-buy tab.",
-    chips:[["all","All"],["star","★ Best fit"],["1bed","1-bed"],["2bed","2-bed"],["3bed","3-bed"],["auction","Auction"],["scheme","Schemes"]],
-    drops:"price"
-  }
-};
-
-let mode="rent", filters=new Set(), maxShare=0, maxMo=0, maxOut=0, sharePct=0;
-
-/* Filter categories: same category = OR (e.g. 2-bed OR 3-bed),
-   different categories = AND (e.g. [2-bed OR 3-bed] AND saved AND shared-ownership). */
-const FCAT={saved:'status',added:'status',new:'status',gone:'status',star:'status',
-  bills:'extra',
-  so:'scheme',intrent:'scheme',rent2buy:'scheme',direct:'scheme',auction:'scheme',scheme:'scheme',
-  studio:'type','1bed':'type','2bed':'type','3bed':'type'};
-function pred(f,d){
-  switch(f){
-    case 'saved':   return hearts.has(String(d.id));
-    case 'added':   return !!d.pending;
-    case 'new':     return !!d.isNew && !d.gone;
-    case 'gone':    return !!d.gone;
-    case 'star':    return !!d.star;
-    case 'bills':   return d.bills==='all'||d.bills==='most';
-    case 'so':      return d.scheme==='so';
-    case 'intrent': return d.scheme==='intrent';
-    case 'rent2buy':return d.scheme==='rent2buy';
-    case 'direct':  return d.scheme==='direct'||d.scheme==='verify';
-    case 'auction': return d.scheme==='auction';
-    case 'scheme':  return d.scheme==='maxshare'||d.scheme==='firsthomes';
-    default:        return d.type===f;
-  }
-}
-
-/* ---------- Hearts + user-added flats (saved in this browser) ---------- */
-const LS_H="ff_hearts_v1", LS_A="ff_added_v1";
-function lsGet(k,dflt){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):dflt; }catch(e){ return dflt; } }
-function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
-let hearts=new Set(lsGet(LS_H,[]));
-let added=lsGet(LS_A,[]);
-function saveHearts(){ lsSet(LS_H,[...hearts]); }
-function saveAdded(){ lsSet(LS_A,added); }
-function toggleHeart(id){
-  id=String(id);
-  if(hearts.has(id)) hearts.delete(id); else hearts.add(id);
-  saveHearts(); render();
-}
-/* user-added flats become provisional cards in the mode they were filed under */
-function addedFor(m){
-  return added.filter(a=>a.mode===m).map(a=>({
-    id:a.id, addr:a.addr||hostOf(a.url), area:(a.area||"added by you")+" · pending details",
-    price:a.price?+a.price:null, unit:"as entered", scheme:"pending", type:a.type||"any",
-    src:hostOf(a.url), url:a.url, img:"", mo:null, moEst:0,
-    full:"pending — details to be verified", allin:a.price?("£"+(+a.price).toLocaleString()):"price TBC",
-    note:a.note||"Added from a link. Use “Copy to share” to send it on, and the full details (price, beds, photo) will be filled in on the next update.",
-    tags:["added by you","pending"], star:0, added:a.when, isNew:1, pending:1
-  }));
-}
-function hostOf(u){ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return "link"; } }
-const grid=document.getElementById('grid');
-const countEl=document.getElementById('count');
-const bar=document.getElementById('bar');
-const drops=document.getElementById('drops');
-const noteStrip=document.getElementById('noteStrip');
-
-function matches(d){
-  if(mode==="buy"){
-    if(maxShare){ let p=effShareCost(d); if(p==null) return false; if(p>maxShare) return false; }
-    if(maxMo){ let r=effRent(d); if(r==null) return false; if(r>maxMo) return false; }
-  }
-  if(mode==="outright"){
-    if(maxOut){ if(d.price!=null && d.price>maxOut) return false; }
-  }
-  if(!filters.size) return true;
-  const groups={};
-  filters.forEach(f=>{ const c=FCAT[f]||'type'; (groups[c]=groups[c]||[]).push(f); });
-  return Object.keys(groups).every(c=>groups[c].some(f=>pred(f,d)));
-}
-function fmt(n){return "£"+n.toLocaleString();}
-function priceBlock(d){
-  if(mode==="rent") return `<div class="price">${fmt(d.price)}<small>${d.type==='2bed'?'total/mo':'/mo'}</small></div>`;
-  let p=(mode==="buy")?effShareCost(d):d.price;
-  if(p==null) return `<div class="price">See listing<small>${d.unit}</small></div>`;
-  let unit=(mode==="buy" && sharePct>0 && fv(d))? sharePct+'% share':d.unit;
-  return `<div class="price">${fmt(p)}<small>${unit}</small></div>`;
-}
-function badges(d){
-  let b=[];
-  if(d.gone)b.push('<span class="b gone">'+(d.gone==='sold'?'SOLD':d.gone==='let'?'LET':'GONE')+'</span>');
-  if(d.isNew&&!d.gone)b.push('<span class="b new">NEW</span>');
-  if(d.star)b.push('<span class="b star">★ TOP</span>');
-  if(mode==="rent"&&d.type==='2bed')b.push('<span class="b b2">SHARE</span>');
-  if(mode!=="rent"){
-    if(d.scheme==='so')b.push('<span class="b so">SHARED OWN.</span>');
-    if(d.scheme==='auction')b.push('<span class="b auc">AUCTION</span>');
-    if(d.scheme==='verify')b.push('<span class="b auc">CHECK TENURE</span>');
-    if(d.scheme==='direct')b.push('<span class="b b2">FULL BUY</span>');
-    if(d.scheme==='rent2buy')b.push('<span class="b so">RENT-TO-BUY</span>');
-    if(d.scheme==='intrent')b.push('<span class="b so">INTERMEDIATE RENT</span>');
-    if(d.scheme==='outright')b.push('<span class="b b2">FULL OWNERSHIP</span>');
-    if(d.scheme==='maxshare')b.push('<span class="b so">MAX-SHARE SO</span>');
-    if(d.scheme==='firsthomes')b.push('<span class="b so">FIRST HOMES</span>');
-    if(d.scheme==='pending')b.push('<span class="b pend">PENDING</span>');
-    b.push('<span class="b src">'+d.src+'</span>');
-  }
-  return b.join('');
-}
-function subline(d){
-  if(mode==="rent") return `<div class="allin">${d.allin}</div>`;
-  let r=(mode==="buy")?effRent(d):d.mo;
-  let mo;
-  if(r!=null){
-    let est=(d.moEst||(sharePct>0&&fv(d)))?' (est.)':'';
-    let forShare=(mode==="buy"&&sharePct>0&&fv(d))?` · for ${sharePct}% share`:'';
-    mo=`~£${r.toLocaleString()}/mo rent${est}${forShare}`;
-  }
-  else if(d.scheme==="direct"||d.scheme==="auction"||d.scheme==="verify"||d.scheme==="outright") mo="no rent — full owner";
-  else if(d.scheme==="rent2buy") mo="below-market rent — save then buy";
-  else if(d.scheme==="firsthomes") mo="full ownership · 30–50% off";
-  else mo="monthly cost — see listing";
-  let extra="";
-  if(mode==="buy" && fv(d)){
-    let pct=affordPct(d);
-    extra=`<div class="afford">Full value £${fv(d).toLocaleString()} · £${(BUDGET/1000)}k budget ≈ <b>${pct}% share</b>${pct>=100?' → owned outright':''}</div>`;
-  }
-  return `<div class="allin">${d.full}</div><div class="mo">${mo}</div>${extra}`;
-}
-function photo(d){
-  if(d.img) return `<img loading="lazy" src="${d.img}" alt="${d.addr}" onerror="this.style.opacity=0">`;
-  return `<div class="noimg">📷 photo on ${d.src} — tap “View” below</div>`;
-}
-function render(){
-  const cfg=MODES[mode];
-  noteStrip.innerHTML=cfg.note;
-  const poolAll=addedFor(mode).concat(cfg.data);
-  const nNew=poolAll.filter(d=>d.isNew&&!d.gone).length, nGone=poolAll.filter(d=>d.gone).length;
-  const chips=cfg.chips.slice(0,1)
-    .concat([["saved","♥ Saved"+(hearts.size?" ("+hearts.size+")":"")]])
-    .concat(added.length?[["added","＋ Added by you"]]:[])
-    .concat(nNew?[["new","✨ New from last sweep ("+nNew+")"]]:[])
-    .concat(nGone?[["gone","✖ Gone ("+nGone+")"]]:[])
-    .concat(cfg.chips.slice(1).filter(c=>c[0]!=="new"));
-  bar.innerHTML=chips.map(([f,l])=>{
-    const on = (f==="all") ? !filters.size : filters.has(f);
-    return `<span class="chip${on?' on':''}" data-f="${f}">${l}${(f!=="all"&&filters.has(f))?' ✕':''}</span>`;
-  }).join('') + (filters.size>1?`<span class="chip clearall" data-f="all">Clear ${filters.size} filters</span>`:'');
-  if(cfg.drops==="buy"){
-    drops.style.display='flex';
-    drops.innerHTML=`
-      <label>Max share / entry price
-        <select id="dShare">
-          <option value="0">Any</option>
-          <option value="80000">≤ £80k</option>
-          <option value="100000">≤ £100k</option>
-          <option value="125000">≤ £125k</option>
-          <option value="150000">≤ £150k</option>
-          <option value="200000">≤ £200k</option>
-        </select></label>
-      <label>Max monthly cost (rent)
-        <select id="dMo">
-          <option value="0">Any</option>
-          <option value="400">≤ £400</option>
-          <option value="600">≤ £600</option>
-          <option value="800">≤ £800</option>
-          <option value="1000">≤ £1,000</option>
-          <option value="1250">≤ £1,250</option>
-        </select></label>
-      <label>🧮 Share calculator — buy&nbsp;%
-        <select id="dPct">
-          <option value="0">As listed</option>
-          <option value="25">25% share</option>
-          <option value="40">40% share</option>
-          <option value="50">50% share</option>
-          <option value="75">75% share</option>
-          <option value="100">100% (own outright)</option>
-        </select></label>
-      <button class="reset" id="dReset">Reset</button>`;
-    const ds=document.getElementById('dShare'), dm=document.getElementById('dMo'), dp=document.getElementById('dPct');
-    ds.value=String(maxShare); dm.value=String(maxMo); dp.value=String(sharePct);
-    ds.onchange=()=>{maxShare=+ds.value;render();};
-    dm.onchange=()=>{maxMo=+dm.value;render();};
-    dp.onchange=()=>{sharePct=+dp.value;render();};
-    document.getElementById('dReset').onclick=()=>{maxShare=0;maxMo=0;sharePct=0;render();};
-  } else if(cfg.drops==="price"){
-    drops.style.display='flex';
-    drops.innerHTML=`
-      <label>Max price (budget ≈ £250k)
-        <select id="dOut">
-          <option value="0">Any</option>
-          <option value="250000">≤ £250k (under budget)</option>
-          <option value="270000">≤ £270k (within budget)</option>
-          <option value="285000">≤ £285k (slight stretch)</option>
-          <option value="325000">≤ £325k (stretch)</option>
-        </select></label>
-      <button class="reset" id="dReset">Reset</button>`;
-    const dooo=document.getElementById('dOut');
-    dooo.value=String(maxOut);
-    dooo.onchange=()=>{maxOut=+dooo.value;render();};
-    document.getElementById('dReset').onclick=()=>{maxOut=0;render();};
-  } else { drops.style.display='none'; drops.innerHTML=''; }
-  const pool=addedFor(mode).concat(cfg.data);
-  const list=pool.filter(matches);
-  const savedN=pool.filter(d=>hearts.has(String(d.id))).length;
-  countEl.textContent=list.length+" of "+pool.length+(mode==="buy"?" part-buy options":mode==="outright"?" outright options":" rentals")
-    +(savedN?"  ·  ♥ "+savedN+" saved here":"")
-    +(hearts.size?"  ·  "+hearts.size+" saved in total":"");
-  grid.innerHTML=list.map(d=>`
-    <div class="card${d.pending?' pending':''}${d.gone?' gone':''}">
-      <div class="ph">
-        ${photo(d)}
-        <div class="badges">${badges(d)}</div>
-        <button class="heart${hearts.has(String(d.id))?' on':''}" data-heart="${d.id}"
-          title="${hearts.has(String(d.id))?'Remove from saved':'Save this flat'}"
-          aria-label="Save this flat">${hearts.has(String(d.id))?'♥':'♡'}</button>
-        ${priceBlock(d)}
-      </div>
-      <div class="body">
-        <div class="addr">${d.addr}</div>
-        <div class="area">${d.area}</div>
-        ${subline(d)}
-        ${d.gone?`<div class="goneline">✖ ${d.gone==='sold'?'Sold':d.gone==='let'?'Let':'No longer available'}${d.goneOn?' · spotted '+d.goneOn:''}${d.goneWhy?' · '+d.goneWhy:''}</div>`:''}
-        <div class="note">${d.note}</div>
-        <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-        <a class="view" href="${d.url}" target="_blank" rel="noopener">View on ${d.src} →</a>
-      </div>
-    </div>`).join('');
-}
-document.getElementById('modes').addEventListener('click',e=>{
-  const m=e.target.closest('.mode'); if(!m)return;
-  document.querySelectorAll('.mode').forEach(x=>x.classList.remove('on'));
-  m.classList.add('on'); mode=m.dataset.m; filters.clear(); maxShare=0; maxMo=0; maxOut=0; sharePct=0; render();
-});
-bar.addEventListener('click',e=>{
-  const c=e.target.closest('.chip'); if(!c)return;
-  const f=c.dataset.f;
-  if(f==="all"){ filters.clear(); }
-  else if(filters.has(f)){ filters.delete(f); }
-  else { filters.add(f); }
-  render();
-});
-
-/* ---------- heart clicks ---------- */
-grid.addEventListener('click',e=>{
-  const h=e.target.closest('[data-heart]');
-  if(!h)return;
-  e.preventDefault();
-  toggleHeart(h.dataset.heart);
-});
-
-/* ---------- add-a-flat panel ---------- */
-const addPanel=document.getElementById('addPanel');
-const aMsg=document.getElementById('aMsg');
-document.getElementById('addToggle').addEventListener('click',()=>addPanel.classList.toggle('open'));
-
-function readForm(){
-  const url=(document.getElementById('aUrl').value||'').trim();
-  if(!url||!/^https?:\/\//i.test(url)){ aMsg.textContent="Please paste a full link starting with http:// or https://"; return null; }
-  return {
-    id:"user"+Date.now(),
-    url,
-    addr:(document.getElementById('aAddr').value||'').trim(),
-    area:(document.getElementById('aAddr').value||'').trim(),
-    price:(document.getElementById('aPrice').value||'').replace(/[^\d]/g,''),
-    type:document.getElementById('aType').value,
-    mode:document.getElementById('aMode').value,
-    note:(document.getElementById('aNote').value||'').trim(),
-    when:new Date().toISOString().slice(0,10)
-  };
-}
-function clearForm(){
-  ['aUrl','aAddr','aPrice','aNote'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('aType').value='';
-}
-document.getElementById('aSave').addEventListener('click',()=>{
-  const f=readForm(); if(!f)return;
-  added.push(f); saveAdded(); clearForm();
-  aMsg.textContent="Added ✓ — it's now showing as a pending card. Use “Add & copy to share” to pass it on for full details.";
-  mode=f.mode; filters=new Set(["added"]);
-  document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));
-  render();
-});
-function summarise(f){
-  return "Flat for the hub:\n"+
-    "Link: "+f.url+"\n"+
-    (f.addr?"Address/area: "+f.addr+"\n":"")+
-    (f.price?"Price: £"+(+f.price).toLocaleString()+"\n":"")+
-    (f.type?"Type: "+f.type+"\n":"")+
-    "Section: "+f.mode+"\n"+
-    (f.note?"Note: "+f.note+"\n":"");
-}
-function copyText(txt,okMsg){
-  const done=()=>{ aMsg.textContent=okMsg; };
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(done).catch(()=>fallback());
-  } else fallback();
-  function fallback(){
-    const ta=document.createElement('textarea');
-    ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
-    document.body.appendChild(ta); ta.select();
-    try{ document.execCommand('copy'); done(); }
-    catch(e){ aMsg.textContent="Couldn't copy automatically — select the text in the box below and copy it manually."; }
-    document.body.removeChild(ta);
-  }
-}
-document.getElementById('aSend').addEventListener('click',()=>{
-  const f=readForm(); if(!f)return;
-  added.push(f); saveAdded(); clearForm();
-  copyText(summarise(f),"Added ✓ and copied to your clipboard — paste it into WhatsApp/email to get the full details filled in.");
-  mode=f.mode; filters=new Set(["added"]);
-  document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));
-  render();
-});
-document.getElementById('aCopyAll').addEventListener('click',()=>{
-  const savedList=[...hearts];
-  if(!added.length && !savedList.length){ aMsg.textContent="Nothing to copy yet — save some flats with ♥ or add one above."; return; }
-  let out="My flat shortlist\n\n";
-  if(added.length){
-    out+="Flats I added:\n";
-    added.forEach(f=>{ out+="• "+(f.addr||hostOf(f.url))+" — "+f.url+(f.note?" ("+f.note+")":"")+"\n"; });
-    out+="\n";
-  }
-  if(savedList.length){
-    const all=[].concat(DATA_RENT,DATA_BUY,DATA_OUTRIGHT,addedFor("rent"),addedFor("buy"),addedFor("outright"));
-    const hit=all.filter(d=>hearts.has(String(d.id)));
-    const seen=new Set();
-    out+="Flats I ♥ saved:\n";
-    hit.forEach(d=>{ if(seen.has(String(d.id)))return; seen.add(String(d.id));
-      out+="• "+d.addr+" — "+(d.price!=null?"£"+d.price.toLocaleString():"see listing")+" — "+d.url+"\n"; });
-  }
-  copyText(out,"Your shortlist is copied to the clipboard ✓ — paste it wherever you like.");
-});
-document.getElementById('aClear').addEventListener('click',()=>{
-  if(!added.length){ aMsg.textContent="You haven't added any flats yet."; return; }
-  added=[]; saveAdded();
-  aMsg.textContent="Your added flats have been cleared. (Saved ♥ hearts are kept.)";
-  filters.delete("added");
-  render();
-});
-
-render();
-</script>
+<script src="data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
